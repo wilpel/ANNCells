@@ -18,9 +18,9 @@ public class Food {
 	public void render(Graphics g) {
 		
 		g.setColor(Color.green);
-		g.fillOval(x, y, 10, 10);
+		g.fillOval(x, y, 2, 2);
 		
-		hitbox.setBounds(x,y,10,10);
+		hitbox.setBounds(x,y,2,2);
 		
 	}
 	
