@@ -30,10 +30,12 @@ public class Brain {
 				searchForCell(cell);
 			}
 			else {
-				searchForFood(cell);
-				
-				//
-				wonderAround(cell);
+				if (cell.getHealth() >= cell.gene.foodCapacity) {
+					wonderAround(cell);
+				}
+				else {
+					searchForFood(cell);
+				}
 			}
 		}
 	}
