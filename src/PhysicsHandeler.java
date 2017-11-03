@@ -19,6 +19,9 @@ public class PhysicsHandeler {
 		
 		for(int i = 0; i < Main.cells.size() ; i++) {
 			
+			if(i == Main.cells.indexOf(cell))
+				continue;
+			
 			if(cell.getHitbox().intersects(Main.cells.get(i).getHitbox())) {
 				return Main.cells.get(i);
 			}

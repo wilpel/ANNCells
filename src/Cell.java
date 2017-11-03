@@ -9,8 +9,9 @@ public class Cell {
 
 	public String NAME = Names.getName();
 
-	private float x, y, size = 10;
-	private float movingSpeed = 1f;
+	private float x, y;
+
+	public float R = new Random().nextFloat(), G = new Random().nextFloat(), B = new Random().nextFloat();
 
 	private float health = 60;
 	private float lifeTime = 0f;
@@ -20,6 +21,8 @@ public class Cell {
 	public static Brain brain = new Brain();
 
 	private Rectangle hitbox = new Rectangle(0, 0, 0, 0);
+
+	public Gene gene = new Gene();
 
 	public Cell(float x, float y, String lastname) {
 
@@ -32,25 +35,32 @@ public class Cell {
 
 	public void moveX(float value) {
 
-		if (x + value > 1270 || x + value < 0) {
-			return;
-		}
+//		if (x + value > 1270 || x + value < 0) {
+//			return;
+//		}
 
-		x += value * movingSpeed;
+		x += (value * gene.speed)/((gene.size)/30);
 	}
 
 	public void moveY(float value) {
 
-		if (y + value > 720 || y + value < 0) {
-			return;
-		}
+//		if (y + value > 720 || y + value < 0) {
+//			return;
+//		}
 
-		y += value * movingSpeed;
+		y += (value * gene.speed)/((gene.size)/30);
+	}
+
+	public void die() {
+		Main.cells.remove(this);
+		Main.log = NAME + " died..";
 	}
 
 	boolean left, up;
+	int timePerformed = 0;
 
-	public void update() {
+	public void update(int delta) {
+		timePerformed++;
 
 		if (left)
 			moveX(new Random().nextFloat());
@@ -62,48 +72,42 @@ public class Cell {
 		else
 			moveY(-(new Random().nextFloat()));
 
-		hitbox.setBounds(x, y, size, size);
+		hitbox.setBounds(x, y, gene.size, gene.size);
 
 		brain.update(this);
 
-		Food currentFood = PhysicsHandeler.isCollidingWithFood(this);
-		Cell currentCell = PhysicsHandeler.isCollidingWithOtherCell(this);
+		if (timePerformed > 6) {
+			Food currentFood = PhysicsHandeler.isCollidingWithFood(this);
+			Cell currentCell = PhysicsHandeler.isCollidingWithOtherCell(this);
 
-		health -= lifeTime;
+			health -= lifeTime;
 
-		if (currentFood != null) {
+			if (currentFood != null) {
 
-			health+=50;
-			Main.eatFood(currentFood);
+				health += 50;
+				Main.eatFood(currentFood);
 
-		}
+			}
 
-		if (currentCell != null) {
+			if (currentCell != null) {
 
-			if (health > 60&&lifeTime>1.5) {
+				if (health > 60 && lifeTime > 1.5) {
 
-//				if (!currentCell.NAME.split(" ")[1].equals(NAME.split(" ")[1])||Main.cells.size()<10) {
-//				
+					// if (!currentCell.NAME.split(" ")[1].equals(NAME.split("
+					// ")[1])||Main.cells.size()<10) {
+					//
 
-					int birthAmount = new Random().nextInt(3);
-					for (int i = 0; i < birthAmount; i++) {
-
-						giveBirth(this, currentCell, NAME.split(" ")[1]);
-					}
-					
-					health = 0;
-					
-				}else {
-					System.out.println("Incest!");
+					giveBirth(this, currentCell, NAME.split(" ")[1]);
 				}
-			//}
+				// }
 
+			}
+
+			timePerformed = 0;
 		}
-
 		if (health < 0)
-			Main.cells.remove(this);
+			die();
 
-		
 		if (movingCounter > 100) {
 
 			left = new Random().nextBoolean();
@@ -113,28 +117,38 @@ public class Cell {
 
 		}
 
-		lifeTime+=0.005f;
+		lifeTime += 0.001f;
 		movingCounter++;
 	}
 
 	public void render(Graphics g) {
 
-//		g.setColor(new Color(1 - health / 100, health / 100, 0));
-//		g.drawString("Name: " + NAME, x, y - size + 10);
-		g.setColor(new Color(health / 100, 0, 0));
-		g.fillOval(x, y, size, size);
+		if((x+gene.size/2)<0||(x+gene.size/2)>1270||(y+gene.size/2)<0||(y+gene.size/2)>720)
+			return;
+		
+		// g.setColor(new Color(1 - health / 100, health / 100, 0));
+		// g.drawString("Name: " + NAME, x, y - size + 10);
+		g.setColor(new Color(R, G, B));
+		g.fillOval(x, y, gene.size, gene.size);
 		g.setColor(Color.white);
-		g.drawOval(x, y, size, size);
+		g.drawOval(x, y, gene.size, gene.size);
 
 	}
-	
+
 	public static void giveBirth(Cell a, Cell b, String lastname) {
 		Cell newCell = new Cell(a.getX(), a.getY(), lastname);
+
+		int birthAmount = new Random().nextInt(3);
+
+		for (int i = 0; i < birthAmount; i++) {
+			newCell.gene = Gene.mixGene(a.gene, b.gene);
+			Main.cells.add(newCell);
+		}
+
+		a.health = 10;
 		
-		newCell.movingSpeed = ((a.movingSpeed + b.movingSpeed)/2)+(new Random().nextFloat()-0.5f)/100;
-		newCell.size = ((a.size+b.size)/2)+(new Random().nextFloat()-0.5f)/100;
-		
-		Main.cells.add(newCell);
+		Main.log = a.NAME + " gave birth to " + birthAmount + " new cells";
+
 	}
 
 	public float getX() {
@@ -151,14 +165,6 @@ public class Cell {
 
 	public void setY(float y) {
 		this.y = y;
-	}
-
-	public float getMovingSpeed() {
-		return movingSpeed;
-	}
-
-	public void setMovingSpeed(float movingSpeed) {
-		this.movingSpeed = movingSpeed;
 	}
 
 	public float getHealth() {

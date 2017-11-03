@@ -11,9 +11,7 @@ import org.encog.neural.pattern.FeedForwardPattern;
 public class Brain {
 
 	public Food nearestSmelledFood;
-
-	private float smell = 300;
-	private float aggression = 1f;
+	
 
 	public Brain() {
 
@@ -21,22 +19,26 @@ public class Brain {
 
 	public void update(Cell cell) {
 
-		nearestSmelledFood = smellNearestFood(cell, smell);
+		searchForFood(cell);
+
+	}
+	
+	public void searchForFood(Cell cell) {
+		nearestSmelledFood = smellNearestFood(cell, cell.gene.smell);
 
 		if (nearestSmelledFood != null) {
-			if (nearestSmelledFood.getX() < cell.getX()) {
-				cell.moveX(-cell.getMovingSpeed());
+			if (nearestSmelledFood.getX() < cell.getX()+cell.gene.size/2) {
+				cell.moveX(-cell.gene.speed);
 			} else {
-				cell.moveX(cell.getMovingSpeed());
+				cell.moveX(cell.gene.speed);
 			}
 
-			if (nearestSmelledFood.getY() < cell.getY()) {
-				cell.moveY(-cell.getMovingSpeed());
+			if (nearestSmelledFood.getY() < cell.getY()+cell.gene.size/2) {
+				cell.moveY(-cell.gene.speed);
 			} else {
-				cell.moveY(cell.getMovingSpeed());
+				cell.moveY(cell.gene.speed);
 			}
 		}
-
 	}
 
 	public static Food smellNearestFood(Cell cell, float smell) {
@@ -57,7 +59,6 @@ public class Brain {
 		}
 
 		if (nearest > smell) {
-			System.out.println(nearest+" "+smell);
 			return null;
 		}
 
