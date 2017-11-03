@@ -8,6 +8,7 @@ import org.encog.neural.networks.layers.BasicLayer;
 public class Brain {
 
 	public Food nearestSmelledFood;
+	public Cell nearestSmelledCell;
 
 	
 	public Brain() {
@@ -17,16 +18,50 @@ public class Brain {
 
 	public void update(Cell cell) {
 
-		if (cell.getHealth() < 100) {
-			searchForFood(cell);
-		}else {
-			wonderAround(cell);
-		}
-		
-		if(cell.getLifeTime() > 0.6&&cell.getHealth()>60) {
+		handlePrio(cell);
+	}
+	
+	public void handlePrio(Cell cell) {
+		if (cell.getLifeTime() > 5) {
 			searchForMate(cell);
 		}
+		else {
+			if (cell.gene.fightFlightPrio > 0) {
+				searchForCell(cell);
+			}
+			else {
+				searchForFood(cell);
+				wonderAround(cell);
+			}
+		}
+	}
+	
+	//Takes in this.cell
+	public void searchForCell(Cell cell) {
+		float sizeProcentThisComparedToFoundCell; //Is it bas to have this local?
+		nearestSmelledCell = smellNearestCell(cell, cell.gene.smell);
 
+		if (nearestSmelledCell != null) {
+			sizeProcentThisComparedToFoundCell = (cell.gene.size/nearestSmelledCell.gene.size)*100;
+			//Köra random 0-100/agression, om den landar inom procent range attackera.
+			//gör temp lösning nedan utan aggression och probabilitet
+			if (sizeProcentThisComparedToFoundCell > 100) {
+				if (nearestSmelledCell.getX() < cell.getX()+cell.gene.size/2) {
+					cell.moveX(-cell.gene.speed);
+				} else {
+					cell.moveX(cell.gene.speed);
+				}
+
+				if (nearestSmelledCell.getY() < cell.getY()+cell.gene.size/2) {
+					cell.moveY(-cell.gene.speed);
+				} else {
+					cell.moveY(cell.gene.speed);
+				}
+			}
+			else {
+				searchForFood(cell);
+			}
+		}
 	}
 
 	public void searchForMate(Cell cell) {
@@ -88,14 +123,14 @@ public class Brain {
 	public void wonderAround(Cell cell) {
 		
 		if (left)
-			cell.moveX(new Random().nextFloat());
+			cell.moveX(cell.gene.speed);
 		else
-			cell.moveX(-new Random().nextFloat());
+			cell.moveX(-cell.gene.speed);
 
 		if (up)
-			cell.moveY((new Random().nextFloat()));
+			cell.moveY((cell.gene.speed));
 		else
-			cell.moveY(-(new Random().nextFloat()));
+			cell.moveY(-(cell.gene.speed));
 
 		if (movingCounter > movingCounterCap) {
 
