@@ -23,7 +23,7 @@ public class Brain {
 			wonderAround(cell);
 		}
 		
-		if(cell.getLifeTime() > 1.5&&cell.getHealth()>60) {
+		if(cell.getLifeTime() > 0.6&&cell.getHealth()>60) {
 			searchForMate(cell);
 		}
 

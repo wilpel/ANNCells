@@ -92,7 +92,14 @@ public class Cell {
 		if (health < 0)
 			die();
 
-		setLifeTime(getLifeTime() + 0.00002f);
+		setLifeTime(getLifeTime() + 0.001f);
+		health -= 0.1f;
+		
+		System.out.println(getLifeTime());
+		
+		if(getLifeTime()>2)
+			health -=0.5f;
+		
 	}
 
 	public void lateUpdate() {
@@ -100,7 +107,6 @@ public class Cell {
 		Food currentFood = PhysicsHandeler.isCollidingWithFood(this);
 		Cell currentCell = PhysicsHandeler.isCollidingWithOtherCell(this);
 
-		health -= getLifeTime() / 5;
 
 		if (currentFood != null && health < 100) {
 
