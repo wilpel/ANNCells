@@ -12,6 +12,7 @@ import org.newdawn.slick.geom.Rectangle;
 public class Cell {
 
 	public String NAME = Names.getName();
+	public String lastname;
 
 	private float x, y;
 
@@ -35,7 +36,8 @@ public class Cell {
 	public List<Vector2f> trail = new ArrayList<Vector2f>();
 	
 	public Cell(float x, float y, String lastname) {
-
+		
+		this.lastname = lastname;
 		NAME = Names.getFirstName() + " " + lastname;
 
 		this.x = x;
@@ -114,17 +116,27 @@ public class Cell {
 			Main.eatFood(currentFood);
 
 		}
-
-		if (currentCell != null/* &&!givenBirth */) {
-
-			if (health > 60 && getLifeTime() > 1.5) {
-
-				giveBirth(this, currentCell, NAME.split(" ")[1]);
-				givenBirth = true;
+		if (currentCell != null) {
+			//Bytte kontakt från parning till mord och gjorde att dem reproducerade med sig själv ovan
+			if(new Random().nextFloat() > 0.5f) {
+				if (health > 60 && lifeTime > 1.5) {
+					givenBirth = true;
+					giveBirth(this, currentCell, NAME.split(" ")[1]); //Hitta bättre lösning så de inte parar med sig själv.		
+				}
+			}
+			else if (currentCell.gene.size < this.gene.size) {
+				currentCell.die();
+				health += 50;
+				Main.log = "Got killed";
 			}
 
-		}
+			//if (health > 60 && lifeTime > 1.5) {
 
+				//giveBirth(this, currentCell, NAME.split(" ")[1]);
+			//}
+			
+
+		}
 		hitbox.setBounds(x, y, gene.size, gene.size);
 	}
 
