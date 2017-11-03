@@ -31,7 +31,10 @@ public class Brain {
 			}
 			else {
 				searchForFood(cell);
+<<<<<<< HEAD
 				wonderAround(cell);
+=======
+>>>>>>> a87a83505a2878f8fe265992c6527aa299974fc6
 			}
 		}
 	}
