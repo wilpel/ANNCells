@@ -1,6 +1,10 @@
-import java.awt.Font;
+
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
@@ -18,12 +22,18 @@ public class Cell {
 
 	private int movingCounter = 0;
 
-	public static Brain brain = new Brain();
+	public Brain brain = new Brain();
+
+	public boolean givenBirth = false;
 
 	private Rectangle hitbox = new Rectangle(0, 0, 0, 0);
 
 	public Gene gene = new Gene();
 
+	public float movingX, movingY;
+
+	public List<Vector2f> trail = new ArrayList<Vector2f>();
+	
 	public Cell(float x, float y, String lastname) {
 
 		NAME = Names.getFirstName() + " " + lastname;
@@ -34,21 +44,37 @@ public class Cell {
 	}
 
 	public void moveX(float value) {
+		movingX = value;
 
-//		if (x + value > 1270 || x + value < 0) {
-//			return;
-//		}
+		trail.add(new Vector2f(x+-(value*10), y));
+		
+		if(trail.size()>50)
+			trail.remove(0);
+		
+		if (x + value > 1270 && value > 0) {
+			return;
+		} else if (x + value < 0 && value < 0) {
+			return;
+		}
 
-		x += (value * gene.speed)/((gene.size)/30);
+		x += (value * gene.speed) / ((gene.size) / 80);
 	}
 
 	public void moveY(float value) {
+		movingY = value;
 
-//		if (y + value > 720 || y + value < 0) {
-//			return;
-//		}
+		trail.add(new Vector2f(x, y+-(value*10)));
+		
+		if(trail.size()>50)
+			trail.remove(0);
+		
+		if (y + value > 720 && value > 0) {
+			return;
+		} else if (y + value < 0 && value < 0) {
+			return;
+		}
 
-		y += (value * gene.speed)/((gene.size)/30);
+		y += (value * gene.speed) / ((gene.size) / 50);
 	}
 
 	public void die() {
@@ -60,79 +86,54 @@ public class Cell {
 	int timePerformed = 0;
 
 	public void update(int delta) {
-		timePerformed++;
-
-		if (left)
-			moveX(new Random().nextFloat());
-		else
-			moveX(-new Random().nextFloat());
-
-		if (up)
-			moveY((new Random().nextFloat()));
-		else
-			moveY(-(new Random().nextFloat()));
-
-		hitbox.setBounds(x, y, gene.size, gene.size);
 
 		brain.update(this);
 
-		if (timePerformed > 6) {
-			Food currentFood = PhysicsHandeler.isCollidingWithFood(this);
-			Cell currentCell = PhysicsHandeler.isCollidingWithOtherCell(this);
-
-			health -= lifeTime;
-
-			if (currentFood != null) {
-
-				health += 50;
-				Main.eatFood(currentFood);
-
-			}
-
-			if (currentCell != null) {
-
-				if (health > 60 && lifeTime > 1.5) {
-
-					// if (!currentCell.NAME.split(" ")[1].equals(NAME.split("
-					// ")[1])||Main.cells.size()<10) {
-					//
-
-					giveBirth(this, currentCell, NAME.split(" ")[1]);
-				}
-				// }
-
-			}
-
-			timePerformed = 0;
-		}
 		if (health < 0)
 			die();
 
-		if (movingCounter > 100) {
+		setLifeTime(getLifeTime() + 0.00002f);
+	}
 
-			left = new Random().nextBoolean();
-			up = new Random().nextBoolean();
+	public void lateUpdate() {
 
-			movingCounter = 0;
+		Food currentFood = PhysicsHandeler.isCollidingWithFood(this);
+		Cell currentCell = PhysicsHandeler.isCollidingWithOtherCell(this);
+
+		health -= getLifeTime() / 5;
+
+		if (currentFood != null && health < 100) {
+
+			health += 40;
+			Main.eatFood(currentFood);
 
 		}
 
-		lifeTime += 0.001f;
-		movingCounter++;
+		if (currentCell != null/* &&!givenBirth */) {
+
+			if (health > 60 && getLifeTime() > 1.5) {
+
+				giveBirth(this, currentCell, NAME.split(" ")[1]);
+				givenBirth = true;
+			}
+
+		}
+
+		hitbox.setBounds(x, y, gene.size, gene.size);
 	}
 
 	public void render(Graphics g) {
 
-		if((x+gene.size/2)<0||(x+gene.size/2)>1270||(y+gene.size/2)<0||(y+gene.size/2)>720)
-			return;
-		
-		// g.setColor(new Color(1 - health / 100, health / 100, 0));
-		// g.drawString("Name: " + NAME, x, y - size + 10);
 		g.setColor(new Color(R, G, B));
 		g.fillOval(x, y, gene.size, gene.size);
-		g.setColor(Color.white);
-		g.drawOval(x, y, gene.size, gene.size);
 
+//		for (int i = 0; i < trail.size(); i++) {
+//			g.setColor(new Color(R, G, B));
+//			g.fillOval(trail.get(i).x, trail.get(i).y, gene.size, gene.size);
+//		}
+
+		g.setColor(new Color(1 - health / 100, health / 100, 0));
+		g.fillRect(x, y - 8, health / 100 * gene.size, 5);
 	}
 
 	public static void giveBirth(Cell a, Cell b, String lastname) {
@@ -146,9 +147,9 @@ public class Cell {
 		}
 
 		a.health = 10;
-		
-		Main.log = a.NAME + " gave birth to " + birthAmount + " new cells";
 
+		Main.log = a.NAME + " gave birth to " + birthAmount + " new cells";
+		Main.HIGHEST_GEN++;
 	}
 
 	public float getX() {
@@ -177,6 +178,14 @@ public class Cell {
 
 	public Rectangle getHitbox() {
 		return hitbox;
+	}
+
+	public float getLifeTime() {
+		return lifeTime;
+	}
+
+	public void setLifeTime(float lifeTime) {
+		this.lifeTime = lifeTime;
 	}
 
 }

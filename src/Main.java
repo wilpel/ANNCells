@@ -16,8 +16,10 @@ public class Main extends BasicGame{
 	public static List<Cell> cells = new ArrayList<Cell>();
 	public static List<Food> food = new ArrayList<Food>();
 	
-	public static int FOOD_AMOUNT = 100;
-	public static int CELL_AMOUNT = 10;
+	public static int FOOD_AMOUNT = 300;
+	public static int CELL_AMOUNT = 500;
+	
+	public static int HIGHEST_GEN = 0;
 	
 	public static String log = "Nothing yet..";
 	
@@ -29,19 +31,31 @@ public class Main extends BasicGame{
 
 	public static void main(String[] args) {
 		
+		
+
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				lateUpdate();
+			}
+		}).start();
+		
 		try { 
 			container = new AppGameContainer(new Main("Neural Simulator")); 
 		    container.setDisplayMode(1270,720,false); 
 		    container.setAlwaysRender(true);
-		    container.setTargetFrameRate(60);
+		    container.setVSync(true);
 		    container.start(); 
 		} catch (SlickException e) { 
 		    e.printStackTrace(); 
 		}
 		
+		
+		
 	}
 	
-	public float cameraX, cameraY;
+	public static float cameraX, cameraY;
 	public void render(GameContainer arg0, Graphics g) throws SlickException {
 
 		g.translate(cameraX, cameraY);
@@ -76,7 +90,7 @@ public class Main extends BasicGame{
 
 	public void update(GameContainer arg0, int delta) throws SlickException {
 	
-		container.setTitle("Neural Simulator | Leading Family: "+getTopFamily()+" | Total: "+cells.size());
+		container.setTitle("Neural Simulator | Leading Family: "+getTopFamily()+" | Total: "+cells.size()+" | Highest gen: "+HIGHEST_GEN);
 		
 		for(int i = 0; i < cells.size(); i++)
 			cells.get(i).update(delta);
@@ -97,7 +111,25 @@ public class Main extends BasicGame{
 		if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
 			cameraX-=10f;
 		}
+
+	}
+	
+	public static void lateUpdate() {
 		
+		while(true) {
+		
+		for(int i = 0; i < cells.size(); i++)
+			cells.get(i).lateUpdate();
+		
+		
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		}
 	}
 	
 	public static void eatFood(Food tempFood) {

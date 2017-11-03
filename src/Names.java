@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,29 +14,34 @@ public class Names {
 	
 	public static void init() {
 		
-		names.add("Homer");
-		names.add("Peter");
-		names.add("Bob");
-		names.add("John");
-		names.add("Jack");
-		names.add("Rick");
-		names.add("Morty");
-		names.add("Megan");
-		names.add("Lily");
-		names.add("Marge");
-		names.add("Bailey");
+		try (BufferedReader br = new BufferedReader(new FileReader(new File("res/firstname.db")))) {
+		    String line;
+		    while ((line = br.readLine()) != null) {
+		       names.add(line.split(" ")[0].toLowerCase());
+		    }
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		surnames.add("Simpson");
-		surnames.add("Griffin");
-		surnames.add("Stone");
-		surnames.add("Croft");
-		surnames.add("Blue");
-		surnames.add("Black");
-		surnames.add("Longstone");
-		surnames.add("Cage");
-		surnames.add("Hanks");
-		surnames.add("Starfish");
 		
+		try (BufferedReader br = new BufferedReader(new FileReader(new File("res/lastnames.db")))) {
+		    String line;
+		    while ((line = br.readLine()) != null) {
+		       surnames.add(line.split(" ")[0].toLowerCase());
+		    }
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
 		
 		
 	}
