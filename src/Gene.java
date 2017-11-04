@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class Gene {
 
-	public float smell = 300;
+	public float smell = 500;
 	public float aggression = 1f;
 	public float speed = 0.6f;
 	public float size = 10;

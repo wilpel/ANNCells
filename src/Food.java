@@ -4,7 +4,8 @@ import org.newdawn.slick.geom.Rectangle;
 
 public class Food {
 
-	private float x, y;
+	private float x, y, size = 32;
+	private float foodLeft = 1;
 	
 	private Rectangle hitbox = new Rectangle(0, 0, 0, 0);
 	
@@ -17,11 +18,17 @@ public class Food {
 
 	public void render(Graphics g) {
 		
-		g.setColor(Color.green);
-		g.fillOval(x, y, 2, 2);
+		g.setColor(new Color(0f,0.2f,0f, foodLeft));
+		g.fillRect(x, y, size, size);
 		
-		hitbox.setBounds(x,y,2,2);
+		hitbox.setBounds(x,y,size,size);
 		
+		if(foodLeft < 0) Main.eatFood(this);
+		
+	}
+	
+	public void eat() {
+		foodLeft-=0.01f;
 	}
 	
 	public float getX() {

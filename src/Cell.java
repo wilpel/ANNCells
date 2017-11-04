@@ -34,9 +34,9 @@ public class Cell {
 	public float movingX, movingY;
 
 	public List<Vector2f> trail = new ArrayList<Vector2f>();
-	
+
 	public Cell(float x, float y, String lastname) {
-		
+
 		this.lastname = lastname;
 		NAME = Names.getFirstName() + " " + lastname;
 
@@ -48,11 +48,11 @@ public class Cell {
 	public void moveX(float value) {
 		movingX = value;
 
-		trail.add(new Vector2f(x+-(value*10), y));
-		
-		if(trail.size()>50)
+		trail.add(new Vector2f(x + -(value * 10), y));
+
+		if (trail.size() > 50)
 			trail.remove(0);
-		
+
 		if (x + value > 1270 && value > 0) {
 			return;
 		} else if (x + value < 0 && value < 0) {
@@ -65,11 +65,11 @@ public class Cell {
 	public void moveY(float value) {
 		movingY = value;
 
-		trail.add(new Vector2f(x, y+-(value*10)));
-		
-		if(trail.size()>50)
+		trail.add(new Vector2f(x, y + -(value * 10)));
+
+		if (trail.size() > 50)
 			trail.remove(0);
-		
+
 		if (y + value > 720 && value > 0) {
 			return;
 		} else if (y + value < 0 && value < 0) {
@@ -96,11 +96,10 @@ public class Cell {
 
 		setLifeTime(getLifeTime() + 0.001f);
 		health -= 0.05f;
-		
-		
-		if(getLifeTime()>2)
-			health -=0.1f;
-		
+
+		if (getLifeTime() > 2)
+			health -= 0.1f;
+
 	}
 
 	public void lateUpdate() {
@@ -108,32 +107,35 @@ public class Cell {
 		Food currentFood = PhysicsHandeler.isCollidingWithFood(this);
 		Cell currentCell = PhysicsHandeler.isCollidingWithOtherCell(this);
 
-
 		if (currentFood != null && health < 100) {
 
-			health += 40;
-			Main.eatFood(currentFood);
+			health += 3;
+			currentFood.eat();
 
 		}
 		if (currentCell != null) {
-			//Bytte kontakt från parning till mord och gjorde att dem reproducerade med sig själv ovan
-			if(new Random().nextFloat() > 0.5f) {
+			// Bytte kontakt från parning till mord och gjorde att dem reproducerade med
+			// sig själv ovan
+			if (new Random().nextFloat() > 0.5f) {
 				if (health > 60 && lifeTime > 1.5) {
 					givenBirth = true;
-					giveBirth(this, currentCell, NAME.split(" ")[1]); //Hitta bättre lösning så de inte parar med sig själv.		
+					giveBirth(this, currentCell, NAME.split(" ")[1]); // Hitta bättre lösning så de inte parar med
+																		// sig själv.
+				}
+			} else if (currentCell.gene.size < this.gene.size) {
+
+				if (!currentCell.NAME.split(" ")[1].equals(NAME.split(" ")[1])) {
+
+					currentCell.die();
+					health += 50;
+					Main.log = "Got killed";
 				}
 			}
-			else if (currentCell.gene.size < this.gene.size) {
-				currentCell.die();
-				health += 50;
-				Main.log = "Got killed";
-			}
 
-			//if (health > 60 && lifeTime > 1.5) {
+			// if (health > 60 && lifeTime > 1.5) {
 
-				//giveBirth(this, currentCell, NAME.split(" ")[1]);
-			//}
-			
+			// giveBirth(this, currentCell, NAME.split(" ")[1]);
+			// }
 
 		}
 		hitbox.setBounds(x, y, gene.size, gene.size);
@@ -144,10 +146,10 @@ public class Cell {
 		g.setColor(new Color(R, G, B));
 		g.fillOval(x, y, gene.size, gene.size);
 
-//		for (int i = 0; i < trail.size(); i++) {
-//			g.setColor(new Color(R, G, B));
-//			g.fillOval(trail.get(i).x, trail.get(i).y, gene.size, gene.size);
-//		}
+		// for (int i = 0; i < trail.size(); i++) {
+		// g.setColor(new Color(R, G, B));
+		// g.fillOval(trail.get(i).x, trail.get(i).y, gene.size, gene.size);
+		// }
 
 		g.setColor(new Color(1 - health / 100, health / 100, 0));
 		g.fillRect(x, y - 8, health / 100 * gene.size, 5);

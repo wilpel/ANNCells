@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
@@ -16,14 +17,16 @@ public class Main extends BasicGame{
 	public static List<Cell> cells = new ArrayList<Cell>();
 	public static List<Food> food = new ArrayList<Food>();
 	
-	public static int FOOD_AMOUNT = 300;
-	public static int CELL_AMOUNT = 10;
+	public static int FOOD_AMOUNT = 15;
+	public static int CELL_AMOUNT = 40;
 	
 	public static int HIGHEST_GEN = 0;
 	
 	public static String log = "Nothing yet..";
 	
     private static AppGameContainer container;
+    
+    public static List<Integer> populationGraph = new ArrayList<Integer>();
 
 	public Main(String title) {
 		super(title);
@@ -40,6 +43,15 @@ public class Main extends BasicGame{
 				lateUpdate();
 			}
 		}).start();
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				secondUpdate();
+			}
+		}).start();
+		
 		
 		try { 
 			container = new AppGameContainer(new Main("Neural Simulator")); 
@@ -60,17 +72,37 @@ public class Main extends BasicGame{
 
 		g.translate(cameraX, cameraY);
 		
-		for(int i = 0; i < cells.size(); i++)
-			cells.get(i).render(g);
-		
 		for(int i = 0; i < food.size(); i++)
 			food.get(i).render(g);
+		
+		for(int i = 0; i < cells.size(); i++)
+			cells.get(i).render(g);
+
+		
 		g.resetTransform();
+		
+		renderStatistics(g);
+		
+	}
+	
+	public void renderStatistics(Graphics g) {
 		
 		g.setColor(new Color(1f, 1f, 1f, 0.2f));
 		g.fillRect(0, 0, 1270, 50);
 		g.setColor(Color.green);
 		g.drawString(log, 10, 30);
+		
+		g.setColor(new Color(1f, 1f, 1f, 0.2f));
+		g.fillRect(0, 60, 300, 200);
+		g.setColor(Color.green);
+		g.drawString("Population", 10, 70);
+		
+		g.setColor(Color.blue);
+		for(int i = 0; i < populationGraph.size(); i++) {
+			try {
+			g.drawLine((i-1)*10, 250-populationGraph.get(i-1)/5, i*10, 250-populationGraph.get(i-1)/5);
+			}catch(Exception e) {}
+		}
 		
 	}
 
@@ -124,6 +156,27 @@ public class Main extends BasicGame{
 		
 		try {
 			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		}
+	}
+	
+	public static void secondUpdate() {
+		
+		while(true) {
+		
+		
+		
+		populationGraph.add(cells.size());
+		
+		if(populationGraph.size()>30)
+			populationGraph.remove(0);
+		
+		try {
+			Thread.sleep(400);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -30,10 +30,12 @@ public class Brain {
 				searchForCell(cell);
 			}
 			else {
-				searchForFood(cell);
-				
-				//
-				wonderAround(cell);
+				if (cell.getHealth() >= cell.gene.foodCapacity) {
+					wonderAround(cell);
+				}
+				else {
+					searchForFood(cell);
+				}
 			}
 		}
 	}
@@ -173,11 +175,14 @@ public class Brain {
 	
 	public static Cell smellNearestCell(Cell cell, float smell) {
 
+
+		
 		int index = 0;
 		float nearest = 999999999;
 
 		for (int i = 0; i < Main.cells.size(); i++) {
 
+			try {
 			if(i==Main.cells.indexOf(cell))
 				continue;
 			
@@ -188,6 +193,7 @@ public class Brain {
 								+ (Main.cells.get(i).getY() - cell.getY()) * (Main.cells.get(i).getY() - cell.getY()));
 				index = i;
 			}
+			}catch(Exception e) {}
 
 		}
 
