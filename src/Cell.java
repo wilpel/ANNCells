@@ -1,9 +1,11 @@
 
-import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
+import org.encog.neural.networks.BasicNetwork;
 import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -13,6 +15,8 @@ public class Cell {
 
 	public String NAME = Names.getName();
 	public String lastname;
+
+	public int networkScore = 0;
 
 	private float x, y;
 
@@ -53,11 +57,11 @@ public class Cell {
 		if (trail.size() > 50)
 			trail.remove(0);
 
-		if (x + value > 1270 && value > 0) {
-			return;
-		} else if (x + value < 0 && value < 0) {
-			return;
-		}
+		// if (x + value > 1270 && value > 0) {
+		// return;
+		// } else if (x + value < 0 && value < 0) {
+		// return;
+		// }
 
 		x += (value * gene.speed);
 	}
@@ -70,11 +74,11 @@ public class Cell {
 		if (trail.size() > 50)
 			trail.remove(0);
 
-		if (y + value > 720 && value > 0) {
-			return;
-		} else if (y + value < 0 && value < 0) {
-			return;
-		}
+		// if (y + value > 720 && value > 0) {
+		// return;
+		// } else if (y + value < 0 && value < 0) {
+		// return;
+		// }
 
 		y += (value * gene.speed);
 	}
@@ -91,8 +95,51 @@ public class Cell {
 
 		brain.update(this);
 
-		if (health < 0)
+		if (health < 0) {
+
+			if (brain instanceof BrainANN) {
+
+				// Räknar ut score för neural network för att senare kunna välja de bästa!
+				BrainANN.scores.add(new NetworkScore(((BrainANN) brain).network,
+						(int) (10000 - brain.smellNearestFoodDist(this, 99999))));
+
+				// DENNA KODEN SKA FLYTTAS!!!!!!!!!!!!!!!!!!
+				// Om denna cell är sist och dör ska en check köras för att se vilket nätverk
+				// som fick bäst score.
+				if (Main.cells.size() == 1) {
+
+					Collections.sort(BrainANN.scores, new Comparator<NetworkScore>() {
+						@Override
+						public int compare(NetworkScore p1, NetworkScore p2) {
+							return p1.score - p2.score;
+						}
+
+					});
+
+					System.out.println("Highest score: " + BrainANN.scores.get(BrainANN.scores.size() - 1).score+" size of scores: "+BrainANN.scores.size());
+
+					for (int i = 0; i < 10; i++) {
+
+						for (int j = BrainANN.scores.size() / 2; j < BrainANN.scores.size(); j++) {
+							System.out.println("j:"+j+" "+Main.cells.size());
+							Cell tempCell = new Cell(new Random().nextInt(1270), new Random().nextInt(720), Names.getLastName());
+							tempCell.brain = new BrainANN((BasicNetwork) BrainANN.scores.get(j).network.clone());
+							BrainANN.scores.remove(j);
+							Main.cells.add(tempCell);
+						}
+					}
+					//BrainANN.scores.clear();	
+					
+					System.out.println("Scores after: "+BrainANN.scores.size());
+					Main.HIGHEST_GEN++;
+					
+
+	
+				}
+			}
 			die();
+
+		}
 
 		setLifeTime(getLifeTime() + 0.001f);
 		health -= 0.05f;
@@ -110,6 +157,7 @@ public class Cell {
 		if (currentFood != null && health < 100) {
 
 			health += 3;
+			networkScore++;
 			currentFood.eat();
 
 		}

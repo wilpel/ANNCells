@@ -17,12 +17,14 @@ public class Main extends BasicGame{
 	public static List<Cell> cells = new ArrayList<Cell>();
 	public static List<Food> food = new ArrayList<Food>();
 	
-	public static int FOOD_AMOUNT = 15;
-	public static int CELL_AMOUNT = 40;
+	public static int FOOD_AMOUNT = 250;
+	public static int CELL_AMOUNT = 100;
 	
 	public static int HIGHEST_GEN = 0;
 	
 	public static String log = "Nothing yet..";
+	
+	public static boolean isRendering = true;
 	
     private static AppGameContainer container;
     
@@ -57,7 +59,8 @@ public class Main extends BasicGame{
 			container = new AppGameContainer(new Main("Neural Simulator")); 
 		    container.setDisplayMode(1270,720,false); 
 		    container.setAlwaysRender(true);
-		    container.setVSync(true);
+		    container.setTargetFrameRate(60);
+		    //container.setVSync(true);
 		    container.start(); 
 		} catch (SlickException e) { 
 		    e.printStackTrace(); 
@@ -70,6 +73,7 @@ public class Main extends BasicGame{
 	public static float cameraX, cameraY;
 	public void render(GameContainer arg0, Graphics g) throws SlickException {
 
+		if(isRendering) {
 		g.translate(cameraX, cameraY);
 		
 		for(int i = 0; i < food.size(); i++)
@@ -82,7 +86,7 @@ public class Main extends BasicGame{
 		g.resetTransform();
 		
 		renderStatistics(g);
-		
+		}
 	}
 	
 	public void renderStatistics(Graphics g) {
@@ -114,6 +118,7 @@ public class Main extends BasicGame{
 			food.add(new Food(new Random().nextInt(1270), new Random().nextInt(720)));
 		}
 		
+		
 		for(int i = 0; i < CELL_AMOUNT; i++) {
 			cells.add(new Cell(new Random().nextInt(1270), new Random().nextInt(720), Names.getLastName()));
 		}
@@ -127,6 +132,13 @@ public class Main extends BasicGame{
 		for(int i = 0; i < cells.size(); i++)
 			cells.get(i).update(delta);
 		
+		if(Keyboard.isKeyDown(Keyboard.KEY_1)) {
+			isRendering = true;
+			container.setTargetFrameRate(60);
+		}else if(Keyboard.isKeyDown(Keyboard.KEY_2)) {
+			isRendering = false;
+			container.setTargetFrameRate(Integer.MAX_VALUE);
+		}
 		
 		if(Keyboard.isKeyDown(Keyboard.KEY_UP)) {
 			cameraY+=10f;
@@ -188,7 +200,7 @@ public class Main extends BasicGame{
 	public static void eatFood(Food tempFood) {
 		
 		food.remove(tempFood);
-		food.add(new Food(new Random().nextInt(1270), new Random().nextInt(720))); 
+		//food.add(new Food(new Random().nextInt(1270), new Random().nextInt(720))); 
 		
 	}
 	

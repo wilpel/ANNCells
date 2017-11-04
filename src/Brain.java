@@ -30,12 +30,10 @@ public class Brain {
 				searchForCell(cell);
 			}
 			else {
-				if (cell.getHealth() >= cell.gene.foodCapacity) {
-					wonderAround(cell);
-				}
-				else {
-					searchForFood(cell);
-				}
+				searchForFood(cell);
+				
+				//
+				wonderAround(cell);
 			}
 		}
 	}
@@ -170,6 +168,25 @@ public class Brain {
 		}
 
 		return Main.food.get(index);
+
+	}
+	
+	public static float smellNearestFoodDist(Cell cell, float smell) {
+
+		float nearest = 999999999;
+
+		for (int i = 0; i < Main.food.size(); i++) {
+
+			if (Math.sqrt((Main.food.get(i).getX() - cell.getX()) * (Main.food.get(i).getX() - cell.getX())
+					+ (Main.food.get(i).getY() - cell.getY()) * (Main.food.get(i).getY() - cell.getY())) < nearest) {
+				nearest = (float) Math
+						.sqrt((Main.food.get(i).getX() - cell.getX()) * (Main.food.get(i).getX() - cell.getX())
+								+ (Main.food.get(i).getY() - cell.getY()) * (Main.food.get(i).getY() - cell.getY()));
+			}
+
+		}
+
+		return nearest;
 
 	}
 	
