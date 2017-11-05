@@ -17,8 +17,8 @@ public class Main extends BasicGame{
 	public static List<Cell> cells = new ArrayList<Cell>();
 	public static List<Food> food = new ArrayList<Food>();
 	
-	public static int FOOD_AMOUNT = 250;
-	public static int CELL_AMOUNT = 100;
+	public static int FOOD_AMOUNT = 100;
+	public static int CELL_AMOUNT = 25;
 	
 	public static int HIGHEST_GEN = 0;
 	

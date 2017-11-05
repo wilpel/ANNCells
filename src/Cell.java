@@ -27,7 +27,7 @@ public class Cell {
 
 	private int movingCounter = 0;
 
-	public Brain brain = new Brain();
+	public Brain brain = new BrainANN();
 
 	public boolean givenBirth = false;
 
@@ -97,46 +97,6 @@ public class Cell {
 
 		if (health < 0) {
 
-			if (brain instanceof BrainANN) {
-
-				// Räknar ut score för neural network för att senare kunna välja de bästa!
-				BrainANN.scores.add(new NetworkScore(((BrainANN) brain).network,
-						(int) (10000 - brain.smellNearestFoodDist(this, 99999))));
-
-				// DENNA KODEN SKA FLYTTAS!!!!!!!!!!!!!!!!!!
-				// Om denna cell är sist och dör ska en check köras för att se vilket nätverk
-				// som fick bäst score.
-				if (Main.cells.size() == 1) {
-
-					Collections.sort(BrainANN.scores, new Comparator<NetworkScore>() {
-						@Override
-						public int compare(NetworkScore p1, NetworkScore p2) {
-							return p1.score - p2.score;
-						}
-
-					});
-
-					System.out.println("Highest score: " + BrainANN.scores.get(BrainANN.scores.size() - 1).score+" size of scores: "+BrainANN.scores.size());
-
-					for (int i = 0; i < 10; i++) {
-
-						for (int j = BrainANN.scores.size() / 2; j < BrainANN.scores.size(); j++) {
-							System.out.println("j:"+j+" "+Main.cells.size());
-							Cell tempCell = new Cell(new Random().nextInt(1270), new Random().nextInt(720), Names.getLastName());
-							tempCell.brain = new BrainANN((BasicNetwork) BrainANN.scores.get(j).network.clone());
-							BrainANN.scores.remove(j);
-							Main.cells.add(tempCell);
-						}
-					}
-					//BrainANN.scores.clear();	
-					
-					System.out.println("Scores after: "+BrainANN.scores.size());
-					Main.HIGHEST_GEN++;
-					
-
-	
-				}
-			}
 			die();
 
 		}
@@ -210,6 +170,7 @@ public class Cell {
 
 		for (int i = 0; i < birthAmount; i++) {
 			newCell.gene = Gene.mixGene(a.gene, b.gene);
+			newCell.brain = BrainANN.crossover(((BrainANN)a.brain));
 			Main.cells.add(newCell);
 		}
 

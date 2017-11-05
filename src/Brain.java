@@ -33,7 +33,7 @@ public class Brain {
 				searchForFood(cell);
 				
 				//
-				wonderAround(cell);
+				wonderAround(cell, cell.gene.speed);
 			}
 		}
 	}
@@ -122,17 +122,17 @@ public class Brain {
 	boolean left, up;
 	int movingCounter = 0;
 	int movingCounterCap = new Random().nextInt(30);
-	public void wonderAround(Cell cell) {
+	public void wonderAround(Cell cell, float spd) {
 		
 		if (left)
-			cell.moveX(cell.gene.speed);
+			cell.moveX(cell.gene.speed*spd);
 		else
-			cell.moveX(-cell.gene.speed);
+			cell.moveX(-cell.gene.speed*spd);
 
 		if (up)
-			cell.moveY((cell.gene.speed));
+			cell.moveY((cell.gene.speed*spd));
 		else
-			cell.moveY(-(cell.gene.speed));
+			cell.moveY(-(cell.gene.speed*spd));
 
 		if (movingCounter > movingCounterCap) {
 

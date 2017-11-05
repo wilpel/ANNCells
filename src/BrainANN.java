@@ -75,11 +75,11 @@ public class BrainANN extends Brain {
 
 		FeedForwardPattern pattern = new FeedForwardPattern();
 
-		pattern.setInputNeurons(4);
+		pattern.setInputNeurons(5);
 
-		pattern.addHiddenLayer(5);
+		pattern.addHiddenLayer(60);
 
-		pattern.setOutputNeurons(2);
+		pattern.setOutputNeurons(3);
 
 		pattern.setActivationFunction(new ActivationTANH());
 
@@ -94,7 +94,7 @@ public class BrainANN extends Brain {
 	@Override
 	public void update(Cell cell) {
 
-		MLData input = new BasicMLData(4);
+		MLData input = new BasicMLData(5);
 
 		Food nearestFood = smellNearestFood(cell, Integer.MAX_VALUE);
 		
@@ -102,19 +102,33 @@ public class BrainANN extends Brain {
 		input.setData(1, this.positionField.normalize(cell.getY()));
 		input.setData(2, this.smellFoodField.normalize(nearestFood.getX()));
 		input.setData(3, this.smellFoodField.normalize(nearestFood.getY()));
+		input.setData(4, this.healthField.normalize(cell.getHealth()));
 
 		//input.setData(1, this.smellFoodField.normalize(smellNearestFoodDist(cell, cell.gene.smell)));
 
 		try {
 			MLData output = this.network.compute(input);
 
+			if(output.getData(0)>0) {
+				wonderAround(cell, (float)output.getData(0));
+			}else if(output.getData(1)>0) {
+				searchForFood(cell);
+			}else if(output.getData(2)>0) {
+				searchForCell(cell);
+				
+			}
 			
-			cell.moveX((float) output.getData(0)*cell.gene.speed);
-			cell.moveY((float) output.getData(1)*cell.gene.speed);
 		} catch (EncogError e) {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public static BrainANN crossover(BrainANN a) {
+	
+		BrainANN tempBrain = new BrainANN(a.network);
+		
+		return tempBrain;
 	}
 
 }
