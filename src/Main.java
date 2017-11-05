@@ -11,6 +11,8 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
+
 
 public class Main extends BasicGame{
 	
@@ -19,6 +21,12 @@ public class Main extends BasicGame{
 	
 	public static int FOOD_AMOUNT = 100;
 	public static int CELL_AMOUNT = 25;
+	
+	public double land_color;
+	public int size = 20;
+	public static int width = 1270;
+	public static int height = 720;
+	public static List<LandGen> landmass = new ArrayList<LandGen>();
 	
 	public static int HIGHEST_GEN = 0;
 	
@@ -57,7 +65,7 @@ public class Main extends BasicGame{
 		
 		try { 
 			container = new AppGameContainer(new Main("Neural Simulator")); 
-		    container.setDisplayMode(1270,720,false); 
+		    container.setDisplayMode(width,height,false); 
 		    container.setAlwaysRender(true);
 		    container.setTargetFrameRate(60);
 		    //container.setVSync(true);
@@ -76,12 +84,16 @@ public class Main extends BasicGame{
 		if(isRendering) {
 		g.translate(cameraX, cameraY);
 		
+		
+		for(int i = 0; i < landmass.size(); i++) {
+			landmass.get(i).render(g);
+		}
+		
 		for(int i = 0; i < food.size(); i++)
 			food.get(i).render(g);
 		
 		for(int i = 0; i < cells.size(); i++)
 			cells.get(i).render(g);
-
 		
 		g.resetTransform();
 		
@@ -121,6 +133,13 @@ public class Main extends BasicGame{
 		
 		for(int i = 0; i < CELL_AMOUNT; i++) {
 			cells.add(new Cell(new Random().nextInt(1270), new Random().nextInt(720), Names.getLastName()));
+		}
+		
+		for(int i = 0; i < width*2; i+=size) {
+			for (int j = 0; j < height*2; j+=size) {
+				land_color = SimplexNoiseLib.noise(i-size, j-size);
+				landmass.add(new LandGen(i-(width/2), j-(height/2), size, land_color));
+			}
 		}
 		
 	}
