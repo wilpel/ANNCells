@@ -22,7 +22,7 @@ public class Main extends BasicGame{
 	public static int FOOD_AMOUNT = 100;
 	public static int CELL_AMOUNT = 25;
 	
-	public double land_color;
+	public double noise;
 	public int size = 20;
 	public static int width = 1270;
 	public static int height = 720;
@@ -134,11 +134,11 @@ public class Main extends BasicGame{
 		for(int i = 0; i < CELL_AMOUNT; i++) {
 			cells.add(new Cell(new Random().nextInt(1270), new Random().nextInt(720), Names.getLastName()));
 		}
-		
+		 //Needs seed for new Maps every time
 		for(int i = 0; i < width*2; i+=size) {
 			for (int j = 0; j < height*2; j+=size) {
-				land_color = SimplexNoiseLib.noise(i-size, j-size);
-				landmass.add(new LandGen(i-(width/2), j-(height/2), size, land_color));
+				noise = SimplexNoiseLib.noise(i*0.002, j*0.002);
+				landmass.add(new LandGen(i-(width/2), j-(height/2), size, noise));
 			}
 		}
 		
