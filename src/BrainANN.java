@@ -138,7 +138,7 @@ public class BrainANN extends Brain {
 
 						currentCell.die();
 						cell.setHealth(cell.getHealth() + 20);
-						cell.gene.size+=4;
+						cell.gene.size+=0.1;
 						Main.log = "Got killed";
 					}
 				}
