@@ -148,6 +148,7 @@ public class Brain {
 
 		for (int x = 0; x < Main.landmass.length; x++) {
 			for (int y = 0; y < Main.landmass[0].length; y++) {
+				try {
 				if (Main.landmass[x][y].id != LandGen.GRASS)
 					continue;
 
@@ -159,6 +160,7 @@ public class Brain {
 					x1 = x;
 					y1 = y;
 				}
+				}catch(Exception e) {}
 			}
 		}
 

@@ -199,8 +199,10 @@ public class Main extends BasicGame {
 
 		while (true) {
 
-			for (int i = 0; i < cells.size(); i++)
+			for (int i = 0; i < cells.size(); i++) {
 				cells.get(i).lateUpdate();
+			
+			}
 
 			
 			try {

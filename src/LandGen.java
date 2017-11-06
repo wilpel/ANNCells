@@ -81,7 +81,7 @@ public class LandGen {
 		}
 		
 		if (id == GRASS) {
-			if (new Random().nextInt(1000) < 5) {
+			if (new Random().nextInt(1000) < 2) {
 
 				int x1 = (int) (x / Main.size + new Random().nextInt(2) - 1);
 				int y1 = (int) (y / Main.size + new Random().nextInt(2) - 1);

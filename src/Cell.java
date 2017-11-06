@@ -22,7 +22,9 @@ public class Cell {
 
 	public float R = new Random().nextFloat(), G = new Random().nextFloat(), B = new Random().nextFloat();
 
-	private float health = 60;
+	float health = 60;
+	float energy = 100;
+	
 	private float lifeTime = 0f;
 
 	private int movingCounter = 0;
@@ -50,8 +52,8 @@ public class Cell {
 	}
 
 	public void moveX(float value) {
+		if(energy>0) {
 		movingX = value;
-
 		trail.add(new Vector2f(x + -(value * 10), y));
 
 		if (trail.size() > 50)
@@ -62,13 +64,14 @@ public class Cell {
 		// } else if (x + value < 0 && value < 0) {
 		// return;
 		// }
-
+		energy-=value;
 		x += (value * gene.speed);
+		}
 	}
 
 	public void moveY(float value) {
+		if(energy>0) {
 		movingY = value;
-
 		trail.add(new Vector2f(x, y + -(value * 10)));
 
 		if (trail.size() > 50)
@@ -80,7 +83,9 @@ public class Cell {
 		// return;
 		// }
 
+		energy-=value;
 		y += (value * gene.speed);
+		}
 	}
 
 	public void die() {
@@ -102,50 +107,19 @@ public class Cell {
 		}
 
 		setLifeTime(getLifeTime() + 0.001f);
-		health -= 0.05f;
+		health -= 0.01f;
 
 		if (getLifeTime() > 2)
 			health -= 0.1f;
+		
+		energy+=0.1f;
 
 	}
 
 	public void lateUpdate() {
-
-		LandGen currentFood = PhysicsHandeler.isCollidingWithTile(getHitbox(), LandGen.GRASS);
-		Cell currentCell = PhysicsHandeler.isCollidingWithOtherCell(this);
-
-		if (currentFood != null && health < 100) {
-
-			health += 3;
-			networkScore++;
-			currentFood.eat();
-
-		}
-		if (currentCell != null) {
-			// Bytte kontakt från parning till mord och gjorde att dem reproducerade med
-			// sig själv ovan
-			if (new Random().nextFloat() > 0.5f) {
-				if (health > 60 && lifeTime > 1.5) {
-					givenBirth = true;
-					giveBirth(this, currentCell, NAME.split(" ")[1]); // Hitta bättre lösning så de inte parar med
-																		// sig själv.
-				}
-			} else if (currentCell.gene.size < this.gene.size) {
-
-				if (!currentCell.NAME.split(" ")[1].equals(NAME.split(" ")[1])) {
-
-					currentCell.die();
-					health += 50;
-					Main.log = "Got killed";
-				}
-			}
-
-			// if (health > 60 && lifeTime > 1.5) {
-
-			// giveBirth(this, currentCell, NAME.split(" ")[1]);
-			// }
-
-		}
+		
+		((BrainANN)brain).lateUpdate(this);
+		
 		hitbox.setBounds(x, y, gene.size, gene.size);
 	}
 
@@ -174,7 +148,7 @@ public class Cell {
 
 		for (int i = 0; i < birthAmount; i++) {
 			newCell.gene = Gene.mixGene(a.gene, b.gene);
-			newCell.brain = BrainANN.crossover(((BrainANN)a.brain));
+			newCell.brain = BrainANN.crossover(((BrainANN)a.brain),((BrainANN)b.brain));
 			Main.cells.add(newCell);
 		}
 
@@ -218,6 +192,10 @@ public class Cell {
 
 	public void setLifeTime(float lifeTime) {
 		this.lifeTime = lifeTime;
+	}
+	
+	public float getEnergy() {
+		return energy;
 	}
 
 }
