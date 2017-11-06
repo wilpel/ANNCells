@@ -111,7 +111,7 @@ public class Cell {
 
 	public void lateUpdate() {
 
-		Food currentFood = PhysicsHandeler.isCollidingWithFood(this);
+		LandGen currentFood = PhysicsHandeler.isCollidingWithTile(getHitbox(), LandGen.GRASS);
 		Cell currentCell = PhysicsHandeler.isCollidingWithOtherCell(this);
 
 		if (currentFood != null && health < 100) {
@@ -151,6 +151,11 @@ public class Cell {
 
 	public void render(Graphics g) {
 
+		if (x+10 < -Main.cameraX||x>-Main.cameraX+Main.width||y-1 < -Main.cameraY||y>-Main.cameraY+Main.height) {
+			//System.out.println("outside!");
+			return;
+		}
+		
 		g.setColor(new Color(R, G, B));
 		g.fillOval(x, y, gene.size, gene.size);
 

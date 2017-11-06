@@ -18,19 +18,21 @@ public class PhysicsHandeler {
 
 	}
 	
-	public static boolean isCollidingWithTile(Rectangle rect, int id) {
+	public static LandGen isCollidingWithTile(Rectangle rect, int id) {
 
-		for (int i = 0; i < Main.landmass.size(); i++) {
+		for (int x = 0; x < Main.landmass.length; x++) {
+			for (int y = 0; y < Main.landmass.length; y++) {
 			try {
-				if (rect.intersects(Main.landmass.get(i).landPc)&&Main.landmass.get(i).id == id) {
-					return true;
+				if (rect.intersects(Main.landmass[x][y].landPc)&&Main.landmass[x][y].id == id) {
+					return Main.landmass[x][y];
 				}
 			} catch (Exception e) {
 
 			}
 		}
+		}
 
-		return false;
+		return null;
 
 	}
 

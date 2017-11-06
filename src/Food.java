@@ -40,7 +40,7 @@ public class Food {
 				Food tempFood = new Food(x + new Random().nextInt((int) (size * 2)) - size,
 						y + new Random().nextInt((int) (size * 2)) - size);
 
-				if (PhysicsHandeler.isCollidingWithTile(hitbox, LandGen.GRASS)) {
+				if (PhysicsHandeler.isCollidingWithTile(hitbox, LandGen.GRASS)!=null) {
 					Main.food.add(tempFood);
 					hasGrowed = true;
 				}

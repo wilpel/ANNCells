@@ -77,7 +77,7 @@ public class BrainANN extends Brain {
 
 		pattern.setInputNeurons(5);
 
-		pattern.addHiddenLayer(60);
+		pattern.addHiddenLayer(8);
 
 		pattern.setOutputNeurons(3);
 
@@ -91,17 +91,16 @@ public class BrainANN extends Brain {
 
 	}
 
-	@Override
+	MLData input = new BasicMLData(5);
 	public void update(Cell cell) {
 
-		MLData input = new BasicMLData(5);
 
-		Food nearestFood = smellNearestFood(cell, cell.gene.smell);
+		LandGen nearestFood = smellNearestFood(cell, cell.gene.smell);
 		
 		input.setData(0, this.positionField.normalize(cell.getX()));
 		input.setData(1, this.positionField.normalize(cell.getY()));
-		input.setData(2, this.smellFoodField.normalize(nearestFood==null?0:nearestFood.getX()));
-		input.setData(3, this.smellFoodField.normalize(nearestFood==null?0:nearestFood.getY()));
+		input.setData(2, this.smellFoodField.normalize(nearestFood==null?0:nearestFood.x));
+		input.setData(3, this.smellFoodField.normalize(nearestFood==null?0:nearestFood.y));
 		input.setData(4, this.healthField.normalize(cell.getHealth()));
 
 		//input.setData(1, this.smellFoodField.normalize(smellNearestFoodDist(cell, cell.gene.smell)));
