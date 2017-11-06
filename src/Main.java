@@ -137,7 +137,7 @@ public class Main extends BasicGame {
 		for (int i = 0; i < landmass.length; i++) {
 			for (int j = 0; j < landmass[0].length; j++) {
 				noise = SimplexNoiseLib.noise(((i * size) * 0.002) - seed, ((j * size) * 0.002) - seed);
-				landmass[i][j] = (new LandGen((i * size), (j * size), size, noise));
+				landmass[i][j] = (new LandGen((i * size)-(width/2), (j * size)-(height/2), size, noise));
 			}
 		}
 
