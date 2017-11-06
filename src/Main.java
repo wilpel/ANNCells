@@ -20,8 +20,9 @@ public class Main extends BasicGame{
 	public static List<Food> food = new ArrayList<Food>();
 	
 	public static int FOOD_AMOUNT = 100;
-	public static int CELL_AMOUNT = 25;
+	public static int CELL_AMOUNT = 100;
 	
+	public static float yearsPassed = 0;
 	public int seed;
 	public double noise;
 	public int size = 20;
@@ -68,7 +69,7 @@ public class Main extends BasicGame{
 			container = new AppGameContainer(new Main("Neural Simulator")); 
 		    container.setDisplayMode(width,height,false); 
 		    container.setAlwaysRender(true);
-		    container.setTargetFrameRate(60);
+		    container.setTargetFrameRate(100);
 		    //container.setVSync(true);
 		    container.start(); 
 		} catch (SlickException e) { 
@@ -99,6 +100,9 @@ public class Main extends BasicGame{
 		g.resetTransform();
 		
 		renderStatistics(g);
+		}else {
+			g.setColor(Color.white);
+			g.drawString("Year:"+yearsPassed/10, 10, 40);
 		}
 	}
 	
@@ -128,9 +132,7 @@ public class Main extends BasicGame{
 		Names.init();
 		seed = new Random().nextInt(10000);
 		
-		for(int i = 0; i < FOOD_AMOUNT; i++) {
-			food.add(new Food(new Random().nextInt(1270), new Random().nextInt(720)));
-		}
+
 		
 		
 		for(int i = 0; i < CELL_AMOUNT; i++) {
@@ -143,6 +145,16 @@ public class Main extends BasicGame{
 				landmass.add(new LandGen(i-(width/2), j-(height/2), size, noise));
 			}
 		}
+		
+		
+		for(int i = 0; i < FOOD_AMOUNT; i++) {
+			
+			int randomMass = new Random().nextInt(landmass.size());
+			
+			if(landmass.get(randomMass).id == LandGen.GRASS)
+				food.add(new Food(landmass.get(randomMass).x, landmass.get(randomMass).y));
+		}
+		
 		
 	}
 
@@ -201,7 +213,7 @@ public class Main extends BasicGame{
 		
 		while(true) {
 		
-		
+		yearsPassed++;
 		
 		populationGraph.add(cells.size());
 		

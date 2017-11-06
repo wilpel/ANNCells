@@ -6,7 +6,11 @@ import org.newdawn.slick.geom.Rectangle;
 
 public class Food {
 
-	private float x, y, size = 32;
+	
+	public static int GROWTH_PROBABILITY = 10;
+	
+	
+	private float x, y, size = 40;
 	private float foodLeft = 1;
 
 	boolean hasGrowed = false;
@@ -22,8 +26,8 @@ public class Food {
 
 	public void render(Graphics g) {
 
-		g.setColor(new Color(0f, 0.2f, 0f, foodLeft));
-		g.fillRect(x, y, size, size);
+		g.setColor(new Color(0f, 0.5f, 0f, foodLeft));
+		g.fillOval(x, y, size, size);
 
 		hitbox.setBounds(x, y, size, size);
 
@@ -31,11 +35,15 @@ public class Food {
 			Main.eatFood(this);
 
 		if (!hasGrowed) {
-			if (new Random().nextInt(1000) < 10) {
+			if (new Random().nextInt(1000) < GROWTH_PROBABILITY) {
 
-				Main.food.add(new Food(x+new Random().nextInt((int) (size*2))-size, y+new Random().nextInt((int) (size*2))-size));
-				hasGrowed = true;
+				Food tempFood = new Food(x + new Random().nextInt((int) (size * 2)) - size,
+						y + new Random().nextInt((int) (size * 2)) - size);
 
+				if (PhysicsHandeler.isCollidingWithTile(hitbox, LandGen.GRASS)) {
+					Main.food.add(tempFood);
+					hasGrowed = true;
+				}
 			}
 		}
 

@@ -96,12 +96,12 @@ public class BrainANN extends Brain {
 
 		MLData input = new BasicMLData(5);
 
-		Food nearestFood = smellNearestFood(cell, Integer.MAX_VALUE);
+		Food nearestFood = smellNearestFood(cell, cell.gene.smell);
 		
 		input.setData(0, this.positionField.normalize(cell.getX()));
 		input.setData(1, this.positionField.normalize(cell.getY()));
-		input.setData(2, this.smellFoodField.normalize(nearestFood.getX()));
-		input.setData(3, this.smellFoodField.normalize(nearestFood.getY()));
+		input.setData(2, this.smellFoodField.normalize(nearestFood==null?0:nearestFood.getX()));
+		input.setData(3, this.smellFoodField.normalize(nearestFood==null?0:nearestFood.getY()));
 		input.setData(4, this.healthField.normalize(cell.getHealth()));
 
 		//input.setData(1, this.smellFoodField.normalize(smellNearestFoodDist(cell, cell.gene.smell)));

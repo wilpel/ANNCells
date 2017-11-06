@@ -154,13 +154,12 @@ public class Cell {
 		g.setColor(new Color(R, G, B));
 		g.fillOval(x, y, gene.size, gene.size);
 
-		// for (int i = 0; i < trail.size(); i++) {
-		// g.setColor(new Color(R, G, B));
-		// g.fillOval(trail.get(i).x, trail.get(i).y, gene.size, gene.size);
-		// }
-
+		g.setColor(Color.black);
+		g.drawOval(x, y, gene.size, gene.size);
+		
 		g.setColor(new Color(1 - health / 100, health / 100, 0));
 		g.fillRect(x, y - 8, health / 100 * gene.size, 5);
+		
 	}
 
 	public static void giveBirth(Cell a, Cell b, String lastname) {

@@ -10,17 +10,33 @@ public class LandGen {
 	public float x,y,size;
 	public double noise;
 	public Rectangle landPc = new Rectangle(0, 0, 0, 0);
-	public Color green = new Color(0f, 1f, 0f);
-	public Color yellow = new Color(1f, 1f, 0f);
-	public Color blue = new Color(0f, 0f, 1f);
-	public Color white = new Color(1f, 1f, 1f);
+	public static Color green = new Color(0x71BC78);
+	public static Color yellow = new Color(0xFCE883);
+	public static Color blue = new Color(0x7CB9E8);
+	public static Color white = new Color(1f, 1f, 1f);
 	public Color this_color;
+	
+	public int id;
+	
+	public static int WATER = 0, GRASS = 1, SAND = 2;
 	
 	public LandGen(int x, int y, int size, double noise) {
 		this.x = x;
 		this.y = y;
-		this.size = size;
+		this.size = size+1;
 		this.noise = noise;
+		
+		
+		if (noise < -0.2) {
+			id = WATER;
+		} else if(noise < 0.2) {
+			id = SAND;
+		} else if(noise < 0.8) {
+			id = GRASS;
+		} else {
+			//this_color = white;
+		}
+		
 	}
 	
 	public void render(Graphics g) {

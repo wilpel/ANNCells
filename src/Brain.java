@@ -148,7 +148,7 @@ public class Brain {
 
 	public static Food smellNearestFood(Cell cell, float smell) {
 
-		int index = 0;
+		int index = -1;
 		float nearest = 999999999;
 
 		for (int i = 0; i < Main.food.size(); i++) {
@@ -167,6 +167,8 @@ public class Brain {
 			return null;
 		}
 
+		if(index == -1) return null;
+		
 		return Main.food.get(index);
 
 	}

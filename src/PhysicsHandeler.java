@@ -1,3 +1,4 @@
+import org.newdawn.slick.geom.Rectangle;
 
 public class PhysicsHandeler {
 
@@ -14,6 +15,22 @@ public class PhysicsHandeler {
 		}
 
 		return null;
+
+	}
+	
+	public static boolean isCollidingWithTile(Rectangle rect, int id) {
+
+		for (int i = 0; i < Main.landmass.size(); i++) {
+			try {
+				if (rect.intersects(Main.landmass.get(i).landPc)&&Main.landmass.get(i).id == id) {
+					return true;
+				}
+			} catch (Exception e) {
+
+			}
+		}
+
+		return false;
 
 	}
 
