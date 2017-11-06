@@ -22,6 +22,7 @@ public class Main extends BasicGame{
 	public static int FOOD_AMOUNT = 100;
 	public static int CELL_AMOUNT = 25;
 	
+	public int seed;
 	public double noise;
 	public int size = 20;
 	public static int width = 1270;
@@ -125,6 +126,7 @@ public class Main extends BasicGame{
 	public void init(GameContainer arg0) throws SlickException {
 		
 		Names.init();
+		seed = new Random().nextInt(10000);
 		
 		for(int i = 0; i < FOOD_AMOUNT; i++) {
 			food.add(new Food(new Random().nextInt(1270), new Random().nextInt(720)));
@@ -137,7 +139,7 @@ public class Main extends BasicGame{
 		 //Needs seed for new Maps every time
 		for(int i = 0; i < width*2; i+=size) {
 			for (int j = 0; j < height*2; j+=size) {
-				noise = SimplexNoiseLib.noise(i*0.002, j*0.002);
+				noise = SimplexNoiseLib.noise((i*0.002)-seed, (j*0.002)-seed);
 				landmass.add(new LandGen(i-(width/2), j-(height/2), size, noise));
 			}
 		}
