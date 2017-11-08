@@ -19,7 +19,7 @@ public class Main extends BasicGame {
 	public static List<Food> food = new ArrayList<Food>();
 
 	public static int FOOD_AMOUNT = 100;
-	public static int CELL_AMOUNT = 100;
+	public static int CELL_AMOUNT = 50;
 
 	public static float yearsPassed = 0;
 	public int seed;
@@ -27,7 +27,7 @@ public class Main extends BasicGame {
 	public static int size = 20;
 	public static int width = 1270;
 	public static int height = 720;
-	public static LandGen[][] landmass = new LandGen[width*2/size][height*2/size];
+	public static LandGen[][] landmass = new LandGen[width * 2 / size][height * 2 / size];
 
 	public static int HIGHEST_GEN = 0;
 
@@ -78,28 +78,28 @@ public class Main extends BasicGame {
 
 	public void render(GameContainer arg0, Graphics g) throws SlickException {
 
-		if (isRendering) {
-			g.translate(cameraX, cameraY);
+		// if (isRendering) {
+		g.translate(cameraX, cameraY);
 
-			for (int x = 0; x < landmass.length; x++) {
-				for (int y = 0; y < landmass[0].length; y++) {
-					landmass[x][y].render(g);
-				}
+		for (int x = 0; x < landmass.length; x++) {
+			for (int y = 0; y < landmass[0].length; y++) {
+				landmass[x][y].render(g);
 			}
-
-			for (int i = 0; i < food.size(); i++)
-				food.get(i).render(g);
-
-			for (int i = 0; i < cells.size(); i++)
-				cells.get(i).render(g);
-
-			g.resetTransform();
-
-			renderStatistics(g);
-		} else {
-			g.setColor(Color.white);
-			g.drawString("Year:" + yearsPassed / 10, 10, 40);
 		}
+
+		for (int i = 0; i < food.size(); i++)
+			food.get(i).render(g);
+
+		for (int i = 0; i < cells.size(); i++)
+			cells.get(i).render(g);
+
+		g.resetTransform();
+
+		renderStatistics(g);
+		// } else {
+		// g.setColor(Color.white);
+		// g.drawString("Year:" + yearsPassed / 10, 10, 40);
+		// }
 	}
 
 	public void renderStatistics(Graphics g) {
@@ -128,21 +128,31 @@ public class Main extends BasicGame {
 	public void init(GameContainer arg0) throws SlickException {
 
 		Names.init();
-		seed = new Random().nextInt(10000);
+		seed = new Random().nextInt(1000000);
 
-		for (int i = 0; i < CELL_AMOUNT; i++) {
-			cells.add(new Cell(new Random().nextInt(1270), new Random().nextInt(720), Names.getLastName()));
-		}
 		// Needs seed for new Maps every time
 		for (int i = 0; i < landmass.length; i++) {
 			for (int j = 0; j < landmass[0].length; j++) {
 				noise = SimplexNoiseLib.noise(((i * size) * 0.002) - seed, ((j * size) * 0.002) - seed);
-				landmass[i][j] = (new LandGen((i * size)-(width/2), (j * size)-(height/2), size, noise));
+				landmass[i][j] = (new LandGen((i * size) - (width / 2), (j * size) - (height / 2), size, noise));
 			}
 		}
 
-		System.out.println(width*height);
-		
+		for (int i = 0; i < CELL_AMOUNT; i++) {
+
+			int x = new Random().nextInt(1270);
+			int y = new Random().nextInt(720);
+
+			if (landmass[x / size][y / size].id == LandGen.WATER) {
+				i--;
+				continue;
+			} else {
+				cells.add(new SimpleCell(x, y, Names.getLastName()));
+			}
+		}
+
+		System.out.println(width * height);
+
 		// for(int i = 0; i < FOOD_AMOUNT; i++) {
 		//
 		// int randomMass = new Random().nextInt(landmass.size());
@@ -155,17 +165,15 @@ public class Main extends BasicGame {
 
 	public void update(GameContainer arg0, int delta) throws SlickException {
 
-		container.setTitle("Neural Simulator | Leading Family: " + getTopFamily() + " | Total: " + cells.size()
-				+ " | Highest gen: " + HIGHEST_GEN);
+		container.setTitle("Neural Simulator FPS:" + container.getFPS() + "| Leading Family: " + getTopFamily()
+				+ " | Total: " + cells.size() + " | Highest gen: " + HIGHEST_GEN);
 
-		
 		for (int x = 0; x < landmass.length; x++) {
 			for (int y = 0; y < landmass[0].length; y++) {
 				landmass[x][y].update();
 			}
 		}
-		
-		
+
 		for (int i = 0; i < cells.size(); i++)
 			cells.get(i).update(delta);
 
@@ -201,10 +209,9 @@ public class Main extends BasicGame {
 
 			for (int i = 0; i < cells.size(); i++) {
 				cells.get(i).lateUpdate();
-			
+
 			}
 
-			
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {

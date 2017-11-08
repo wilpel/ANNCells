@@ -9,6 +9,7 @@ public class Brain {
 
 	public LandGen nearestSmelledFood;
 	public Cell nearestSmelledCell;
+	public static LandGen nearestFood;
 
 	public Brain() {
 
@@ -26,7 +27,7 @@ public class Brain {
 			if (cell.gene.fightFlightPrio > 0) {
 				searchForCell(cell);
 			} else {
-				searchForFood(cell);
+				// searchForFood(cell);
 
 				//
 				wonderAround(cell, cell.gene.speed);
@@ -56,7 +57,7 @@ public class Brain {
 					cell.moveY(cell.gene.speed);
 				}
 			} else {
-				searchForFood(cell);
+				// searchForFood(cell);
 			}
 		}
 	}
@@ -86,31 +87,33 @@ public class Brain {
 
 	}
 
-	public void searchForFood(Cell cell) {
+	public void turnToFood(Cell cell, float value) {
 
-		if (cell.getHealth() >= cell.gene.foodCapacity)
+		if (nearestFood == null)
 			return;
 
-		try {
+		float angle = PhysicsHandeler.getTargetAngle(cell.getX(), cell.getY(), nearestFood.x, nearestFood.y);
 
-			nearestSmelledFood = smellNearestFood(cell, cell.gene.smell);
+		if (cell.getRotation() > angle)
+			cell.rotate(-(cell.gene.speed * (10 * value)));
+		else
+			cell.rotate(cell.gene.speed * (10 * value));
 
-			if (nearestSmelledFood != null) {
-				if (nearestSmelledFood.x < cell.getX() + cell.gene.size / 2) {
-					cell.moveX(-cell.gene.speed);
-				} else {
-					cell.moveX(cell.gene.speed);
-				}
+	}
 
-				if (nearestSmelledFood.y < cell.getY() + cell.gene.size / 2) {
-					cell.moveY(-cell.gene.speed);
-				} else {
-					cell.moveY(cell.gene.speed);
-				}
-			}
-		} catch (Exception e) {
-			// e.printStackTrace();
-		}
+	public void turnToCell(Cell cell, float value) {
+
+		if (nearestSmelledCell == null)
+			return;
+
+		float angle = PhysicsHandeler.getTargetAngle(cell.getX(), cell.getY(), nearestSmelledCell.getX(),
+				nearestSmelledCell.getY());
+
+		if (cell.getRotation() > angle)
+			cell.rotate(-(cell.gene.speed * (10 * value)));
+		else
+			cell.rotate(cell.gene.speed * (10 * value));
+
 	}
 
 	boolean left, up;
@@ -149,18 +152,20 @@ public class Brain {
 		for (int x = 0; x < Main.landmass.length; x++) {
 			for (int y = 0; y < Main.landmass[0].length; y++) {
 				try {
-				if (Main.landmass[x][y].id != LandGen.GRASS)
-					continue;
+					if (Main.landmass[x][y].id != LandGen.GRASS)
+						continue;
 
-				if (Math.sqrt((Main.landmass[x][y].x - cell.getX()) * (Main.landmass[x][y].x - cell.getX())
-						+ (Main.landmass[x][y].y - cell.getY()) * (Main.landmass[x][y].y - cell.getY())) < nearest) {
-					nearest = (float) Math
-							.sqrt((Main.landmass[x][y].x - cell.getX()) * (Main.landmass[x][y].x - cell.getX())
-									+ (Main.landmass[x][y].y - cell.getY()) * (Main.landmass[x][y].y - cell.getY()));
-					x1 = x;
-					y1 = y;
+					if (Math.sqrt((Main.landmass[x][y].x - cell.getX()) * (Main.landmass[x][y].x - cell.getX())
+							+ (Main.landmass[x][y].y - cell.getY())
+									* (Main.landmass[x][y].y - cell.getY())) < nearest) {
+						nearest = (float) Math.sqrt((Main.landmass[x][y].x - cell.getX())
+								* (Main.landmass[x][y].x - cell.getX())
+								+ (Main.landmass[x][y].y - cell.getY()) * (Main.landmass[x][y].y - cell.getY()));
+						x1 = x;
+						y1 = y;
+					}
+				} catch (Exception e) {
 				}
-				}catch(Exception e) {}
 			}
 		}
 
@@ -224,6 +229,45 @@ public class Brain {
 		}
 
 		return Main.cells.get(index);
+
+	}
+
+	public static float smellNearestCellDist(Cell cell, float smell) {
+
+		float nearest = 100;
+		try {
+			for (int i = 0; i < Main.cells.size(); i++) {
+
+				if (i == Main.cells.indexOf(cell))
+					continue;
+
+				if (Math.sqrt((Main.cells.get(i).getX() - cell.getX()) * (Main.cells.get(i).getX() - cell.getX())
+						+ (Main.cells.get(i).getY() - cell.getY())
+								* (Main.cells.get(i).getY() - cell.getY())) < nearest) {
+					nearest = (float) Math.sqrt((Main.cells.get(i).getX() - cell.getX())
+							* (Main.cells.get(i).getX() - cell.getX())
+							+ (Main.cells.get(i).getY() - cell.getY()) * (Main.cells.get(i).getY() - cell.getY()));
+
+				}
+
+			}
+		} catch (Exception e) {
+
+		}
+		return nearest;
+
+	}
+
+	public static float senseNoiseOfTile(int x, int y) {
+
+		if (x > Main.landmass.length || y > Main.landmass[0].length || x < 0 || y < 0)
+			return 0;
+
+		try {
+		return (float) Main.landmass[x][y].noise;
+		}catch(Exception e) {
+			return 0;
+		}
 
 	}
 

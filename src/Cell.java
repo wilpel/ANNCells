@@ -19,10 +19,11 @@ public class Cell {
 	public int networkScore = 0;
 
 	private float x, y;
-
+	private float rotation;
+	
 	public float R = new Random().nextFloat(), G = new Random().nextFloat(), B = new Random().nextFloat();
 
-	float health = 60;
+	float health = 120;
 	float energy = 100;
 	
 	private float lifeTime = 0f;
@@ -51,6 +52,37 @@ public class Cell {
 
 	}
 
+	public void rotate(float value) {
+		
+		if(getRotation() < 0)
+			setRotation(360);
+		
+		if(getRotation() > 360)
+			setRotation(0);
+		
+		setRotation(Math.round(getRotation()+value));
+	}
+	
+	public void move(float value) {
+		if(energy>0) {
+			
+		LandGen walkingTile = PhysicsHandeler.isCollidingWithTile(getHitbox(), LandGen.WATER);
+			
+		
+		if(walkingTile != null) {
+			energy-=value*5;
+			value/=2;
+		}else { 
+			energy-=value*2;
+		}
+		
+		x += gene.speed*value * Math.sin(Math.toRadians(-1*getRotation()));
+	    y += gene.speed*value * Math.cos(Math.toRadians(-1*getRotation()));
+	    
+	    
+		}
+	}
+	
 	public void moveX(float value) {
 		if(energy>0) {
 		movingX = value;
@@ -89,62 +121,25 @@ public class Cell {
 	}
 
 	public void die() {
-		Main.cells.remove(this);
-		Main.log = NAME + " died..";
+	
 	}
 
-	boolean left, up;
-	int timePerformed = 0;
-
 	public void update(int delta) {
-
-		brain.update(this);
-
-		if (health < 0) {
-
-			die();
-
-		}
-
-		setLifeTime(getLifeTime() + 0.001f);
-		health -= 0.01f;
-
-		if (getLifeTime() > 2)
-			health -= 0.1f;
-		
-		energy+=0.1f;
 
 	}
 
 	public void lateUpdate() {
 		
-		((BrainANN)brain).lateUpdate(this);
-		
-		hitbox.setBounds(x, y, gene.size, gene.size);
 	}
 
 	public void render(Graphics g) {
-
-		if (x+10 < -Main.cameraX||x>-Main.cameraX+Main.width||y-1 < -Main.cameraY||y>-Main.cameraY+Main.height) {
-			//System.out.println("outside!");
-			return;
-		}
-		
-		g.setColor(new Color(R, G, B));
-		g.fillOval(x, y, gene.size, gene.size);
-
-		g.setColor(Color.black);
-		g.drawOval(x, y, gene.size, gene.size);
-		
-		g.setColor(new Color(1 - health / 100, health / 100, 0));
-		g.fillRect(x, y - 8, health / 100 * gene.size, 5);
 		
 	}
 
-	public static void giveBirth(Cell a, Cell b, String lastname) {
+	public void giveBirth(Cell a, Cell b, String lastname) {
 		Cell newCell = new Cell(a.getX(), a.getY(), lastname);
 
-		int birthAmount = new Random().nextInt(3);
+		int birthAmount = new Random().nextInt(5);
 
 		for (int i = 0; i < birthAmount; i++) {
 			newCell.gene = Gene.mixGene(a.gene, b.gene);
@@ -196,6 +191,14 @@ public class Cell {
 	
 	public float getEnergy() {
 		return energy;
+	}
+
+	public float getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
 	}
 
 }

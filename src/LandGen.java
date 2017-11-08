@@ -10,7 +10,7 @@ public class LandGen {
 	public double noise;
 	public Rectangle landPc = new Rectangle(0, 0, 0, 0);
 	public static Color green = new Color(0x71BC78);
-	public static Color yellow = new Color(0xFCE883);
+	public static Color yellow = new Color(0x9F8170);
 	public static Color blue = new Color(0x7CB9E8);
 	public static Color white = new Color(1f, 1f, 1f);
 	public Color this_color;
@@ -81,7 +81,7 @@ public class LandGen {
 		}
 		
 		if (id == GRASS) {
-			if (new Random().nextInt(1000) < 2) {
+			if (new Random().nextInt(5000) < 1) {
 
 				int x1 = (int) (x / Main.size + new Random().nextInt(2) - 1);
 				int y1 = (int) (y / Main.size + new Random().nextInt(2) - 1);

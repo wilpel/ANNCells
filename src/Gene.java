@@ -2,9 +2,9 @@ import java.util.Random;
 
 public class Gene {
 
-	public float smell = 100;
-	public float aggression = 1f;
-	public float speed = 0.8f;
+	public float smell = 200;
+	public float aggression = 1.6f;
+	public float speed = 1f;
 	public float size = 10;
 	public float foodCapacity = 100;
 	public float fightFlightPrio = 0; //If larger the ZERO kill bitches.
