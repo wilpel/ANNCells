@@ -5,9 +5,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class SimpleCell extends Cell {
-	
-	public float sent_msg;
-	public float rcvd_msg;
 
 	public SimpleCell(float x, float y, String lastname) {
 		super(x, y, lastname);

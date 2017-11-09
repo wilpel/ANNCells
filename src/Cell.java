@@ -13,6 +13,9 @@ import org.newdawn.slick.geom.Rectangle;
 
 public class Cell {
 	
+	public float sent_msg;
+	public float rcvd_msg;
+	
 	public String NAME = Names.getName();
 	public String lastname;
 
