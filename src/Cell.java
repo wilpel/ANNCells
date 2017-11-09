@@ -12,7 +12,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 
 public class Cell {
-
+	
 	public String NAME = Names.getName();
 	public String lastname;
 
@@ -51,7 +51,9 @@ public class Cell {
 		this.y = y;
 
 	}
-
+	public float listen(float rcvd_msg) {
+		return rcvd_msg;
+	}
 	public void rotate(float value) {
 		
 		if(getRotation() < 0)
@@ -125,7 +127,7 @@ public class Cell {
 	}
 
 	public void update(int delta) {
-
+		
 	}
 
 	public void lateUpdate() {

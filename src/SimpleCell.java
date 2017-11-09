@@ -5,6 +5,9 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class SimpleCell extends Cell {
+	
+	public float sent_msg;
+	public float rcvd_msg;
 
 	public SimpleCell(float x, float y, String lastname) {
 		super(x, y, lastname);
@@ -13,6 +16,17 @@ public class SimpleCell extends Cell {
 
 	}
 
+	public void speak(Cell cell) {
+		this.sent_msg = this.gene.size;
+		cell.listen(sent_msg);
+	}
+	
+	public void comunicate() {
+		float smell_ = this.gene.smell;
+		Cell coms_cell = this.brain.smellNearestCell(this, smell_);
+		speak(coms_cell);
+	}
+	
 	public void die() {
 
 		if (Main.cells.size() < 2) {
@@ -47,6 +61,7 @@ public class SimpleCell extends Cell {
 	int timePerformed = 0;
 
 	public void update(int delta) {
+		
 
 		// System.out.println("updating");
 
