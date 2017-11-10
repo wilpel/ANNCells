@@ -84,6 +84,8 @@ public class LandGen {
 		if (id == GRASS) {
 			if (new Random().nextInt(5000) < 1) {
 
+				if(PhysicsHandeler.getDistanceOfNearestCell(x, y) >150) {
+				
 				int x1 = (int) (x / Main.size + new Random().nextInt(2) - 1);
 				int y1 = (int) (y / Main.size + new Random().nextInt(2) - 1);
 				try {
@@ -94,6 +96,7 @@ public class LandGen {
 					}
 				} catch (Exception e) {
 
+				}
 				}
 			}
 		}

@@ -63,4 +63,27 @@ public class PhysicsHandeler {
 		return (float) Math.toDegrees(Math.atan2(dy, dx));
 	}
 
+	public static float getDistanceOfNearestCell(float x, float y) {
+
+		float nearest = 100;
+		try {
+			for (int i = 0; i < Main.cells.size(); i++) {
+
+				if (Math.sqrt((Main.cells.get(i).getX() - x) * (Main.cells.get(i).getX() - x)
+						+ (Main.cells.get(i).getY() - y)
+								* (Main.cells.get(i).getY() - y)) < nearest) {
+					nearest = (float) Math.sqrt((Main.cells.get(i).getX() - x)
+							* (Main.cells.get(i).getX() - x)
+							+ (Main.cells.get(i).getY() - y) * (Main.cells.get(i).getY() - y));
+
+				}
+
+			}
+		} catch (Exception e) {
+
+		}
+		return nearest;
+
+	}
+	
 }

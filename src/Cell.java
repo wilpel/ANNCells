@@ -26,7 +26,7 @@ public class Cell {
 	
 	public float R = new Random().nextFloat(), G = new Random().nextFloat(), B = new Random().nextFloat();
 
-	float health = 120;
+	float health = 60;
 	float energy = 100;
 	
 	private float lifeTime = 0f;
