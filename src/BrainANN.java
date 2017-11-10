@@ -120,18 +120,19 @@ public class BrainANN extends Brain {
 
 
 			if (output.getData(3) > 0) {
-				if (cell.getHealth() > 50 && cell.getLifeTime() > 1.5) {
+				if (cell.getHealth()-20 > 40 && cell.getLifeTime() > 1.5) {
 					cell.givenBirth = true;
 					cell.giveBirth(cell, cell, cell.NAME.split(" ")[1]);
 					cell.setHealth(cell.getHealth() - 20);
 				}
 			}
 
-			if (currentFood != null && cell.health < 30) {
+			if (currentFood != null && cell.health < cell.gene.foodCapacity) {
 
 				currentFood.eat(cell);
 
 			}
+			
 			if (smellNearestFoodDist(cell, cell.gene.smell) < 100 && currentCell != null) {
 
 				if (output.getData(3) > 0) {

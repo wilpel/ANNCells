@@ -236,7 +236,7 @@ public class Brain {
 
 	public static float smellNearestCellDist(Cell cell, float smell) {
 
-		float nearest = 100;
+		float nearest = 9999999;
 		try {
 			for (int i = 0; i < Main.cells.size(); i++) {
 

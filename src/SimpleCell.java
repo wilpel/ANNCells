@@ -79,10 +79,10 @@ public class SimpleCell extends Cell {
 		}
 
 		setLifeTime(getLifeTime() + 0.001f);
-		health -= 0.01f;
+		health -= 0.05f;
 
 		if (getLifeTime() > 3.5)
-			health -= 0.05f;
+			health -= 0.1f;
 		
 		if(PhysicsHandeler.isCollidingWithTile(getHitbox(), LandGen.WATER)!=null){
 			health-=0.1f;
