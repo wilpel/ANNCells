@@ -68,15 +68,15 @@ public class BrainANN extends Brain {
 
 	{
 
-		int layers = 4;
+		int layers = 3;
 
 		FeedForwardPattern pattern = new FeedForwardPattern();
 
-		pattern.setInputNeurons(4);
+		pattern.setInputNeurons(6);
 
 		for (int i = 0; i < layers; i++) {
 
-			pattern.setOutputNeurons(100);
+			pattern.setOutputNeurons(new Random().nextInt(200));
 
 		}
 
@@ -92,7 +92,7 @@ public class BrainANN extends Brain {
 
 	}
 
-	MLData input = new BasicMLData(5);
+	MLData input = new BasicMLData(6);
 
 	public void update(Cell cell) {
 
@@ -104,7 +104,11 @@ public class BrainANN extends Brain {
 		input.setData(2, this.healthField.normalize(cell.getEnergy()));
 		input.setData(3, this.sensorField.normalize(senseNoiseOfTile(cell)));
 		input.setData(4, this.healthField.normalize(cell.getHealth()));
-
+		input.setData(5,
+				this.positionField.normalize(nearestSmelledFood == null ? 0
+						: PhysicsHandeler.getTargetAngle(cell.getX(), cell.getY(), nearestSmelledFood.x,
+								nearestSmelledFood.y)));
+		
 		// input.setData(1, this.smellFoodField.normalize(smellNearestFoodDist(cell,
 		// cell.gene.smell)));
 

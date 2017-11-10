@@ -29,8 +29,15 @@ public class SimpleCell extends Cell {
 	
 	public void die() {
 
+		
+		try {
+			Main.landmass[(int) (getX()/Main.size)][(int) (getY()/Main.size)].noise = 0.79f;
+		}catch(Exception e) {
+			
+		}
+		
 		if (Main.cells.size() < 2) {
-
+				//Main.generateTerrain();
 				for (int j = 0; j < 10; j++) {
 					
 					for(int i = Main.deadcells.size(); i > Main.deadcells.size()-5 ; i--) {
@@ -82,7 +89,7 @@ public class SimpleCell extends Cell {
 		health -= 0.05f;
 
 		if (getLifeTime() > 3.5)
-			health -= 0.1f;
+			health -= getLifeTime()/10;
 		
 		if(PhysicsHandeler.isCollidingWithTile(getHitbox(), LandGen.WATER)!=null){
 			health-=0.1f;

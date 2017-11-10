@@ -42,7 +42,7 @@ public class LandGen {
 		if (id == GRASS && noise - 0.2 > -0.2) {
 
 			noise -= 0.2f;				
-			cell.setHealth(cell.getHealth() + 1);
+			cell.setHealth(cell.getHealth() + 10);
 
 		}
 
@@ -84,7 +84,7 @@ public class LandGen {
 		if (id == GRASS) {
 			if (new Random().nextInt(5000) < 500) {
 
-				if(PhysicsHandeler.getDistanceOfNearestCell(x, y) >1000) {
+				if(PhysicsHandeler.getDistanceOfNearestCell(x, y) >900) {
 				//System.out.println("Closest: "+PhysicsHandeler.getDistanceOfNearestCell(x, y));	
 				int x1 = (int) (x / Main.size + new Random().nextInt(2) - 1);
 				int y1 = (int) (y / Main.size + new Random().nextInt(2) - 1);

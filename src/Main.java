@@ -23,8 +23,8 @@ public class Main extends BasicGame {
 	public static int CELL_AMOUNT = 10;
 
 	public static float yearsPassed = 0;
-	public int seed;
-	public double noise;
+	public static int seed;
+	public static double noise;
 	public static int size = 20;
 	public static int width = 1270;
 	public static int height = 720;
@@ -129,16 +129,9 @@ public class Main extends BasicGame {
 	public void init(GameContainer arg0) throws SlickException {
 
 		Names.init();
-		seed = new Random().nextInt(1000000);
-
-		// Needs seed for new Maps every time
-		for (int i = 0; i < landmass.length; i++) {
-			for (int j = 0; j < landmass[0].length; j++) {
-				noise = SimplexNoiseLib.noise(((i * size) * 0.002) - seed, ((j * size) * 0.002) - seed);
-				landmass[i][j] = (new LandGen((i * size) - (width / 2), (j * size) - (height / 2), size, noise));
-			}
-		}
-
+	
+		generateTerrain();
+		
 		for (int i = 0; i < CELL_AMOUNT; i++) {
 
 			int x = new Random().nextInt(1270);
@@ -162,6 +155,20 @@ public class Main extends BasicGame {
 		// food.add(new Food(landmass.get(randomMass).x, landmass.get(randomMass).y));
 		// }
 
+	}
+	
+	public static void generateTerrain() {
+		
+		seed = new Random().nextInt(1000000);
+
+		// Needs seed for new Maps every time
+		for (int i = 0; i < landmass.length; i++) {
+			for (int j = 0; j < landmass[0].length; j++) {
+				noise = SimplexNoiseLib.noise(((i * size) * 0.002) - seed, ((j * size) * 0.002) - seed);
+				landmass[i][j] = (new LandGen((i * size) - (width / 2), (j * size) - (height / 2), size, noise));
+			}
+		}
+		
 	}
 
 	public void update(GameContainer arg0, int delta) throws SlickException {

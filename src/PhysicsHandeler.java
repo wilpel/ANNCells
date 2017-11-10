@@ -75,7 +75,9 @@ public class PhysicsHandeler {
 					nearest = (float) Math.sqrt((Main.cells.get(i).getX() - x)
 							* (Main.cells.get(i).getX() - x)
 							+ (Main.cells.get(i).getY() - y) * (Main.cells.get(i).getY() - y));
-
+					
+					//System.out.println("x "+x+" y "+y+" x"+Main.cells.get(i).getX()+" y"+Main.cells.get(i).getY());
+					
 				}
 
 			}
