@@ -76,7 +76,7 @@ public class BrainANN extends Brain {
 
 		for (int i = 0; i < layers; i++) {
 
-			pattern.setOutputNeurons(350);
+			pattern.setOutputNeurons(100);
 
 		}
 
@@ -127,7 +127,7 @@ public class BrainANN extends Brain {
 				}
 			}
 
-			if (currentFood != null && cell.health < 100) {
+			if (currentFood != null && cell.health < 30) {
 
 				currentFood.eat(cell);
 

@@ -36,9 +36,9 @@ public class SimpleCell extends Cell {
 					for(int i = Main.deadcells.size(); i > Main.deadcells.size()-5 ; i--) {
 					SimpleCell tempCell = new SimpleCell(new Random().nextInt(Main.width), new Random().nextInt(Main.height),
 							Names.getLastName());
-					
+					try {
 					tempCell.brain = new BrainANN((BasicNetwork) ((BrainANN)Main.deadcells.get(i).brain).network.clone());
-					
+					}catch(Exception e) {}
 					Main.cells.add(tempCell);
 					}
 				}
@@ -83,7 +83,7 @@ public class SimpleCell extends Cell {
 
 		if (getLifeTime() > 3.5)
 			health -= 0.01f;
-
+		
 		if(PhysicsHandeler.isCollidingWithTile(getHitbox(), LandGen.WATER)!=null){
 			health-=0.1f;
 		}

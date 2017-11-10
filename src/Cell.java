@@ -36,6 +36,7 @@ public class Cell {
 	public Brain brain = new BrainANN();
 
 	public boolean givenBirth = false;
+	public boolean isMoving = false;
 
 	private Rectangle hitbox = new Rectangle(0, 0, 0, 0);
 

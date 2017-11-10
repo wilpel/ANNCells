@@ -105,12 +105,12 @@ public class Main extends BasicGame {
 
 	public void renderStatistics(Graphics g) {
 
-		g.setColor(new Color(0.1f, 0.1f, 0.2f, 0.7f));
+		g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.85f));
 		g.fillRect(0, 0, 1270, 50);
 		g.setColor(Color.white);
-		g.drawString(log, 10, 30);
+		g.drawString("Log: "+log+" Year: "+Math.round(yearsPassed), 10, 30);
 
-		g.setColor(new Color(0.1f, 0.1f, 0.2f, 0.7f));
+		g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.85f));
 		g.fillRect(0, 60, 300, 200);
 		g.setColor(Color.white);
 		g.drawString("Population", 10, 70);
@@ -202,6 +202,9 @@ public class Main extends BasicGame {
 			cameraX -= 10f;
 		}
 
+		
+		yearsPassed+=0.001f;
+		
 	}
 
 	public static void lateUpdate() {
@@ -227,7 +230,6 @@ public class Main extends BasicGame {
 
 		while (true) {
 
-			yearsPassed++;
 
 			populationGraph.add(cells.size());
 
